@@ -16,8 +16,8 @@
 source("helpers.R")
 system(" Rscript -e 'options(keep.source=TRUE)' ")
 functions.to.run <- c() #TO DO - Check to make sure every function that needs to be ran is sourced!
-query.continue("These are all functions that will be ran and profiled. Please make sure there are none missing: ", sapply(ls(), paste, "\n"), "\n Continue? (Yes/No)")
-
+tryCatch({sapply(list.files('sources', full.names = TRUE), source)}, error=function(){query.continue("Sources directory NOT found in ", getwd(), "You can continue without this, but you will not be able to see the source code in the flame graph section of profvis. This is not recommended, continue anyways?")})
+query.continue("These are all functions that will be ran and profiled in detail. Please make sure there are none missing: ", sapply(ls(), paste, "\n"), "\n Continue? (Yes/No)")
 
 # Error catch for dependencies so that the code does not stop after 5 days because a package wasn't loaded
 dependencies <-  c("PTMsToPathways", "profvis", "igraph", "plyr", "purrr", "Rtsne", "vegan", "dplyr", "utils", "BiocManager", "STRINGdb", "RCy3")
