@@ -43,10 +43,10 @@ logs.directory <- paste("log", get.time())
 message(paste('Initilizing log directory:', logs.directory))
 if(dir.exists(logs.directory)) stop(paste(logs.directory, 'already exists! Please wait a few seconds and retry this script.'))
 dir.create(logs.directory)
-path <- path.to.new.file(logs.directory, "Progress.txt")
-progress.file <- file.create(path)
-assign.docu.path(path)
-sink(file=path.to.new.file(logs.directory, "Pr_Output.txt"))
+setwd(logs.directory)
+progress.file <- file.create("Progress.txt")
+assign.docu.path("Progress.txt")
+sink(file="Pr_Output.txt")
 # Objects.rda & profile.html must be created at the end of file
 
 
@@ -56,15 +56,16 @@ sink(file=path.to.new.file(logs.directory, "Pr_Output.txt"))
 message('Started running package!')
 cat("Started running package at ", get.time(), "\n") # For sink
 docu.write(paste("Started running package!", "\n", "\n"))
-myprofile <- profvis({runme()}, prof_output = path.to.new.file(logs.directory, "profile")) #TOTAL TIME -> 
+try({myprofile <- profvis({runme()}, prof_output = "profile")}) #TOTAL TIME -> 
 
 
 
 
 # Save Global Enviroment to a file
-save.image(file=path.to.new.file(logs.directory, "Env_Image.rda"))
-try({htmlwidgets::saveWidget(myprofile, path.to.new.file(logs.directory, "profile.html"))}) # Doesn't work if running script from terminal
+save.image(file="Env_Image.rda")
+try({htmlwidgets::saveWidget(myprofile, logs.directory, "profile.html")}) # Doesn't work if running script from terminal
 
 # Cleanup
+setwd('..')
 sink() # DO NOT FORGET
 cat("Log file:" , logs.directory, '\n')

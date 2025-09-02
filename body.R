@@ -1,7 +1,7 @@
 runme <- function(){
   
   # Assign the databases
-  ptmtable.name <- load("data/ptmtable.rda", verbose=TRUE)
+  ptmtable.name <- load("../data/ptmtable.rda", verbose=TRUE)
   ptmtable <- get(ptmtable.name)
   #bioplanet.name <- load("data/bioplanet.csv", verbose=TRUE)
   #bioplanet <- get(bioplanet.name)
