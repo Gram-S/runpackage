@@ -33,7 +33,7 @@ print('Sourcing file functions...')
 for(x in list.files('PTMsToPathways/R', full.name=TRUE)) tryCatch({source(x)}, error=function(y){cat(x, 'not sourcable', '\n')}) # This should be a sapply function but apply is being mean to me today :(
 query.continue('The names of unsourced files have been printed (if nothing was printed, then just continue!). You can continue without sourcing, but it is not recommended as the profiler will not be able to analyze the source code of functions. Continue? (yes/no)')
 
-# Create a logs folder and get ready populate
+# Create a logs folder and populate
 logs.directory <- paste("log", get.time())
 if(!dir.exists(logs.directory)) dir.create(logs.directory)
 path <- path.to.new.file(logs.directory, "Progress.txt")
@@ -49,8 +49,10 @@ ptmtable.name <- load("data/ptmtable.rda", verbose=TRUE)
 databases <- list(get(ptmtable.name)) #db stands for databases, requires: TO DO
 
 
-# Running the profiler over the code
-myprofile <- profvis({runme(databases)})
+
+
+# Running the profiler over the code in the body file
+myprofile <- profvis({runme(databases)}) #TOTAL TIME -> 
 
 
 
