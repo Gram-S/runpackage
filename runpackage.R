@@ -13,6 +13,7 @@
       #* profile.html | The output of the R profiler for all operations done. Please view this
 
 # For organizational purposes, some commonly used functions are in the helpers file
+if(tail(strsplit(getwd(), split="/")[[1]], n=1) != "runpackage") stop(paste("Your current directory is ", getwd(), "Please set your working directory to 'runpackage' (the folder this script was ran in)")) # Error catch
 source("helpers.R")
 source('body.R')
 
@@ -23,14 +24,13 @@ if(length(required.dependencies) >= 1) stop(cat("The following packages have not
 lapply(dependencies, library, character.only=TRUE)
 
 # Source every function in the PTMsToPathways package
-if(tail(strsplit(getwd(), split="/")[[1]], n=1) != "runpackage") stop(paste("Your current directory is ", getwd(), "Please set your working directory to 'runpackage' (the folder this script was ran in)"))
 system(" 
        Rscript -e 'options(keep.source=TRUE)' 
        rm -rf PTMsToPathways
        git clone https://github.com/UM-Applied-Algorithms-Lab/PTMsToPathways
        ")
-tryCatch({sapply(list.files('PTMsToPathways/R', full.names = TRUE), source)}, error=function(){query.continue("R directory NOT found in ", getwd(), "You can continue without this, but you will not be able to see the source code in the flame graph section of profvis. This is not recommended, continue anyways?")})
-
+for(x in list.files('PTMsToPathways/R', full.name=TRUE)) tryCatch({source(x)}, error=function(y){cat(x, 'not sourcable', '\n')}) # This should be a sapply function but apply is being mean to me today :(
+  
 # Create a logs folder and get ready populate
 logs.directory <- paste("log", get.time())
 if(!dir.exists(logs.directory)) dir.create(logs.directory)
