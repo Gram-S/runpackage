@@ -9,6 +9,8 @@ runme <- function(databases){
   
   # Run the functions
   MakeClusterList(ptmtable)
+  MakeCorrelationNetwork(common.clusters, ptm.correlation.matrix)
+  GetSTRINGdb(gene.cccn)
   
   
 }
