@@ -41,18 +41,11 @@ progress.file <- file.create(path) # File will ONLY be written after code is com
 sink(file=path.to.new.file(logs.directory, "Pr_Output.txt"))
 # Objects.rda & PTMsTP_Profile must be created at the end of file
 
-# Initilize Databases
-ptmtable.name <- load("data/ptmtable.rda", verbose=TRUE)
-# ptmtable <- get(ptmtable.name) #This is how you get a varible regardless of name
-#bioplanet.name <- load("TO DO", verbose=TRUE)
-
-databases <- list(get(ptmtable.name)) #db stands for databases, requires: TO DO
-
 
 
 
 # Running the profiler over the code in the body file
-myprofile <- profvis({runme(databases)}) #TOTAL TIME -> 
+myprofile <- profvis({runme()}) #TOTAL TIME -> 
 
 
 
