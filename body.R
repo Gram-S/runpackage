@@ -1,4 +1,4 @@
-runme <- function(databases){
+runme <- function(){
   
   # Assign the databases
   ptmtable.name <- load("data/ptmtable.rda", verbose=TRUE)
@@ -8,9 +8,10 @@ runme <- function(databases){
   
   
   # Run the functions
-  MakeClusterList(ptmtable)
-  MakeCorrelationNetwork(common.clusters, ptm.correlation.matrix)
-  GetSTRINGdb(gene.cccn)
+  docu.func(MakeClusterList, ptmtable)
+  docu.func(MakeCorrelationNetwork, common.clusters, ptm.correlation.matrix)
+  
+  #GetSTRINGdb(gene.cccn)
   
   
 }

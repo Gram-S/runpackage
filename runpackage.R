@@ -14,10 +14,12 @@
 
 # For organizational purposes, some commonly used functions are in the helpers file
 if(tail(strsplit(getwd(), split="/")[[1]], n=1) != "runpackage") stop(paste("Your current directory is ", getwd(), "Please set your working directory to 'runpackage' (the folder this script was ran in)")) # Error catch
+print('Sourcing helper and body...')
 source("helpers.R")
 source('body.R')
 
 # Error catch for dependencies so that the code does not stop after 5 days because a package wasn't loaded
+print('Checking and librarying dependencies...')
 dependencies <-  c("profvis", "igraph", "plyr", "purrr", "Rtsne", "vegan", "dplyr", "utils", "BiocManager", "STRINGdb", "RCy3")
 required.dependencies <- setdiff(dependencies, rownames(installed.packages()))
 if(length(required.dependencies) >= 1) stop(cat("The following packages have not been found: ", required.dependencies, "Note: STRINGdb and RCy3 must be installed with BiocManager.")) 
@@ -35,16 +37,18 @@ query.continue('\n The names of unsourced files have been printed (if nothing wa
 
 # Create a logs folder and populate
 logs.directory <- paste("log", get.time())
-if(!dir.exists(logs.directory)) dir.create(logs.directory)
+cat('Initilizing log directory: ', logs.directory, '...')
 path <- path.to.new.file(logs.directory, "Progress.txt")
-progress.file <- file.create(path) # File will ONLY be written after code is complete
+progress.file <- file.create(path)
+assign.docu.path(path)
 sink(file=path.to.new.file(logs.directory, "Pr_Output.txt"))
-# Objects.rda & PTMsTP_Profile must be created at the end of file
+# Objects.rda & profile.html must be created at the end of file
 
 
 
 
 # Running the profiler over the code in the body file
+docu.write("Started running package!")
 myprofile <- profvis({runme()}) #TOTAL TIME -> 
 
 
