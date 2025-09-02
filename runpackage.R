@@ -15,30 +15,33 @@
 # For organizational purposes, some commonly used functions are in the helpers file
 try({sink()}) # If code exits with error this can mess up the console
 if(tail(strsplit(getwd(), split="/")[[1]], n=1) != "runpackage") stop(paste("Your current directory is ", getwd(), "Please set your working directory to 'runpackage' (the folder this script was ran in)")) # Error catch
-print('Sourcing helper and body...')
+message('Sourcing helper and body...')
 source("helpers.R")
 source('body.R')
 
 # Error catch for dependencies so that the code does not stop after 5 days because a package wasn't loaded
-print('Checking and librarying dependencies...')
+message('Checking and librarying dependencies...')
 dependencies <-  c("profvis", "igraph", "plyr", "purrr", "Rtsne", "vegan", "dplyr", "utils", "BiocManager", "STRINGdb", "RCy3")
 required.dependencies <- setdiff(dependencies, rownames(installed.packages()))
 if(length(required.dependencies) >= 1) stop(cat("The following packages have not been found: ", required.dependencies, "Note: STRINGdb and RCy3 must be installed with BiocManager.")) 
 lapply(dependencies, library, character.only=TRUE)
 
 # Source every function in the PTMsToPathways package
+message('Attempting to clone package... (WILL REQUIRE USER INPUT)')
 system(" 
        Rscript -e 'options(keep.source=TRUE)' 
        rm -rf PTMsToPathways
        git clone https://github.com/UM-Applied-Algorithms-Lab/PTMsToPathways
        ")
-print('Sourcing file functions...')
+cat('Sourcing file functions...', '\n', '  Unsourced files: ', '\n')
 for(x in list.files('PTMsToPathways/R', full.name=TRUE)) tryCatch({source(x)}, error=function(y){cat('   ', '-', x, 'not sourcable', '\n')}) # This should be a sapply function but apply is being mean to me today :(
-query.continue('\n The names of unsourced files have been printed (if nothing was printed, then just continue!). You can continue without sourcing these files, but the profiler will not be able to analyze the source code of those files. Continue? (yes/no)')
+query.continue('\n You can continue without sourcing these files, but the profiler will not be able to analyze the source code of those files. Continue? (yes/no)')
 
 # Create a logs folder and populate
 logs.directory <- paste("log", get.time())
-cat('Initilizing log directory: ', logs.directory, '...')
+message(paste('Initilizing log directory:', logs.directory))
+if(dir.exists(logs.directory)) stop(paste(logs.directory, 'already exists! Please wait a few seconds and retry this script.'))
+dir.create(logs.directory)
 path <- path.to.new.file(logs.directory, "Progress.txt")
 progress.file <- file.create(path)
 assign.docu.path(path)
@@ -49,7 +52,9 @@ sink(file=path.to.new.file(logs.directory, "Pr_Output.txt"))
 
 
 # Running the profiler over the code in the body file
-docu.write("Started running package!")
+message('Started running package!')
+cat("Started running package at ", get.time(), "\n") # For sink
+docu.write(paste("Started running package!", "\n", "\n"))
 myprofile <- profvis({runme()}) #TOTAL TIME -> 
 
 
