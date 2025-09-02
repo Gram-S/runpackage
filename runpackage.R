@@ -14,16 +14,22 @@
 
 # For organizational purposes, some commonly used functions are in the helpers file
 source("helpers.R")
-system(" Rscript -e 'options(keep.source=TRUE)' ")
-functions.to.run <- c() #TO DO - Check to make sure every function that needs to be ran is sourced!
-tryCatch({sapply(list.files('sources', full.names = TRUE), source)}, error=function(){query.continue("Sources directory NOT found in ", getwd(), "You can continue without this, but you will not be able to see the source code in the flame graph section of profvis. This is not recommended, continue anyways?")})
-query.continue("These are all functions that will be ran and profiled in detail. Please make sure there are none missing: ", sapply(ls(), paste, "\n"), "\n Continue? (Yes/No)")
+source('body.R')
 
 # Error catch for dependencies so that the code does not stop after 5 days because a package wasn't loaded
 dependencies <-  c("PTMsToPathways", "profvis", "igraph", "plyr", "purrr", "Rtsne", "vegan", "dplyr", "utils", "BiocManager", "STRINGdb", "RCy3")
 required.dependencies <- setdiff(dependencies, rownames(installed.packages()))
 if(length(required.dependencies) >= 1) stop(cat("The following packages have not been found: ", required.dependencies, "Note: STRINGdb and RCy3 must be installed with BiocManager.")) 
 lapply(dependencies, library, character.only=TRUE)
+
+# Source every function in the PTMsToPathways package
+if(tail(strsplit(getwd(), split="/")[[1]], n=1) != "runpackage") stop(paste("Your current directory is ", getwd(), "Please set your working directory to 'runpackage' (the folder this script was ran in)"))
+system(" 
+       Rscript -e 'options(keep.source=TRUE)' 
+       rm -rf PTMsToPathways
+       git clone https://github.com/UM-Applied-Algorithms-Lab/PTMsToPathways
+       ")
+tryCatch({sapply(list.files('PTMsToPathways/R', full.names = TRUE), source)}, error=function(){query.continue("R directory NOT found in ", getwd(), "You can continue without this, but you will not be able to see the source code in the flame graph section of profvis. This is not recommended, continue anyways?")})
 
 # Create a logs folder and get ready populate
 logs.directory <- paste("log", get.time())
@@ -38,23 +44,11 @@ ptmtable.name <- load("data/ptmtable.rda", verbose=TRUE)
 # ptmtable <- get(ptmtable.name) #This is how you get a varible regardless of name
 #bioplanet.name <- load("TO DO", verbose=TRUE)
 
-
-
+databases <- list(get(ptmtable.name)) #db stands for databases, requires: TO DO
 
 
 # Running the profiler over the code
-myprofile <- profvis(
-  {
-    MakeClusterList(get(ptmtable.name))
-    
-  }
-)
-
-
-
-
-
-
+myprofile <- profvis({runme(databases)})
 
 
 
