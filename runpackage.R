@@ -10,6 +10,7 @@
       #* Env_Image.rda | A snapshot of the global enviroment at the time this script ends which includes every object created in the functions
       #* Pr_Output.txt | The "natural" output of every print statement in the functions. (This will NOT include things output with "message" function)
       #* Progress.txt | A file that updates in real time as the code progresses. The last line is what the script is currently doing. Please check this to check the progress
+      #* profile      | An output if the html widget is disabled
       #* profile.html | The output of the R profiler for all operations done. Please view this
 
 # For organizational purposes, some commonly used functions are in the helpers file
@@ -55,15 +56,15 @@ sink(file=path.to.new.file(logs.directory, "Pr_Output.txt"))
 message('Started running package!')
 cat("Started running package at ", get.time(), "\n") # For sink
 docu.write(paste("Started running package!", "\n", "\n"))
-myprofile <- profvis({runme()}) #TOTAL TIME -> 
+myprofile <- profvis({runme()}, prof_output = path.to.new.file(logs.directory, "profile")) #TOTAL TIME -> 
 
 
 
 
 # Save Global Enviroment to a file
 save.image(file=path.to.new.file(logs.directory, "Env_Image.rda"))
-htmlwidgets::saveWidget(myprofile, path.to.new.file(logs.directory, "profile.html"))
+try({htmlwidgets::saveWidget(myprofile, path.to.new.file(logs.directory, "profile.html"))}) # Doesn't work if running script from terminal
 
 # Cleanup
 sink() # DO NOT FORGET
-cat("Log file:" , logs.directory)
+cat("Log file:" , logs.directory, '\n')
