@@ -10,7 +10,7 @@ runme <- function(){
   # Run the functions
   docu.func(MakeClusterList, ptmtable)
   docu.func(MakeCorrelationNetwork, common.clusters, ptm.correlation.matrix)
-  docu.func(GetSTRINGdb, gene.cccn)
+  #docu.func(GetSTRINGdb, gene.cccn)
   
   
 }

@@ -44,7 +44,7 @@ docu.func <- function(func, ...){
 
 query.continue <- function(...){
   cat(...)
-  answer = readline()
+  answer = readLines(con = "stdin", n = 1)
   continue <- answer %in% c("Yes", "yes", "y")
   if(!continue) stop("User did not affirm. Code Terminated")
 }
