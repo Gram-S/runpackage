@@ -13,6 +13,7 @@
       #* profile.html | The output of the R profiler for all operations done. Please view this
 
 # For organizational purposes, some commonly used functions are in the helpers file
+try({sink()}) # If code exits with error this can mess up the console
 if(tail(strsplit(getwd(), split="/")[[1]], n=1) != "runpackage") stop(paste("Your current directory is ", getwd(), "Please set your working directory to 'runpackage' (the folder this script was ran in)")) # Error catch
 print('Sourcing helper and body...')
 source("helpers.R")
@@ -32,7 +33,7 @@ system("
        git clone https://github.com/UM-Applied-Algorithms-Lab/PTMsToPathways
        ")
 print('Sourcing file functions...')
-for(x in list.files('PTMsToPathways/R', full.name=TRUE)) tryCatch({source(x)}, error=function(y){cat(x, 'not sourcable', '\n')}) # This should be a sapply function but apply is being mean to me today :(
+for(x in list.files('PTMsToPathways/R', full.name=TRUE)) tryCatch({source(x)}, error=function(y){cat('   ', '-', x, 'not sourcable', '\n')}) # This should be a sapply function but apply is being mean to me today :(
 query.continue('\n The names of unsourced files have been printed (if nothing was printed, then just continue!). You can continue without sourcing these files, but the profiler will not be able to analyze the source code of those files. Continue? (yes/no)')
 
 # Create a logs folder and populate
