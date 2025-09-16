@@ -28,7 +28,7 @@ if(length(required.dependencies) >= 1) stop(cat("The following packages have not
 lapply(dependencies, library, character.only=TRUE)
 
 # Source every function in the PTMsToPathways package
-message('Attempting to clone package... (WILL REQUIRE USER INPUT)')
+message('Attempting to clone package...')
 system(" 
        Rscript -e 'options(keep.source=TRUE)' 
        rm -rf PTMsToPathways
@@ -36,7 +36,7 @@ system("
        ")
 cat('Sourcing file functions...', '\n', '  Unsourced files: ', '\n')
 for(x in list.files('PTMsToPathways/R', full.name=TRUE)) tryCatch({source(x)}, error=function(y){cat('   ', '-', x, 'not sourcable', '\n')}) # This should be a sapply function but apply is being mean to me today :(
-query.continue('\n You can continue without sourcing these files, but the profiler will not be able to analyze the source code of those files. Continue? (yes/no)')
+#query.continue('\n You can continue without sourcing these files, but the profiler will not be able to analyze the source code of those files. Continue? (yes/no)')
 
 # Create a logs folder and populate
 logs.directory <- paste("log", get.time())
@@ -57,7 +57,7 @@ message('Started running package!')
 cat("Started running package at ", get.time(), "\n") # For sink
 docu.write(paste("Started running package!", "\n", "\n"))
 try({myprofile <- profvis({runme()}, prof_output = "profile")}) #TOTAL TIME -> 
-
+docu.write(paste("Finished running package!"))
 
 
 

@@ -38,8 +38,9 @@ docu.func <- function(func, ...){
   func.name <- as.character(substitute(func))
   docu.linebr()
   docu.write(paste("Running", func.name))
-  func(...)
+  returnme <- func(...)
   docu.write(paste("Finished", func.name))
+  return(returnme)
 }
 
 query.continue <- function(...){
